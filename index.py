@@ -1,6 +1,3 @@
-import numpy as np
-import pandas as pd
-
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -15,20 +12,19 @@ s.starttls()
 s.login(str(user),str(passkey))
 
 import requests
-from bs4 import BeautifulSoup
-import bs4
-
 import json
 
-response = requests.get("https://cloud.iexapis.com/stable/stock/SPY/quote?token=" + str(api_key) + "", timeout=240)
+import portfolio
+stock_arr = portfolio.stock_arr()
+stocks = portfolio.stocks()
+
+response = requests.get("https://cloud.iexapis.com/stable/stock/market/batch?token="+str(api_key)+"&symbols="+str(stocks)+"&types=quote,news,chart&range=1m&last=5", timeout=260)
 data = response.json()
-print('Close: ' + str(data['close']))
-print('One Day Change: '+ str(data['change']))
 
+closing_price = str(data[stock_arr[0]]['quote']['close'])
+change = str(data[stock_arr[0]]['quote']['change'])
 
-message = 'Closing price of $' + str(data['close']) + ' for the SPY index today, a change of ' + str(data['change']) + '!'
+message = 'Closing price of $' + closing_price + ' for '+ stock_arr[0] + ' today, a change of ' + change + '!'
 
 s.sendmail(str(user), 'michaelscottfox1@gmail.com', message)
-
 s.quit()
-
