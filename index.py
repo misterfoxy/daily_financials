@@ -6,9 +6,13 @@ import smtplib
 import requests
 import json
 
+
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 # configure environment 
 
 import portfolio
+import message
 
 load_dotenv()
 api_key = os.getenv('APIKEY')
@@ -33,7 +37,13 @@ closing_price = str(data[stock_arr[0]]['quote']['close'])
 change = str(data[stock_arr[0]]['quote']['change'])
 
 # simple no-subject email message of closing price and change
-message = 'Closing price of $' + closing_price + ' for '+ stock_arr[0] + ' today, a change of ' + change + '!'
+msg = MIMEMultipart('alternative')
+msg['Subject']='Daily Financials'
+html = message.email(closing_price,change)
 
-s.sendmail(str(user), 'michaelscottfox1@gmail.com', message)
+
+message = MIMEText(html,'html')
+msg.attach(message)
+
+s.sendmail(str(user), 'michaelscottfox1@gmail.com', msg.as_string())
 s.quit()
