@@ -1,3 +1,4 @@
 daily_financials
 .env
 __pycache__
+test.py

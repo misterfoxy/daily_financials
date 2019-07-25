@@ -33,7 +33,7 @@ response = requests.get("https://cloud.iexapis.com/stable/stock/market/batch?tok
 data = response.json()
 
 # configured currently to pull results just from one stock
-closing_price = str(data[stock_arr[0]]['quote']['close'])
+closing_price = str(data[stock_arr[0]]['quote']['latestPrice'])
 change = str(data[stock_arr[0]]['quote']['change'])
 
 # simple no-subject email message of closing price and change
